@@ -1,25 +1,72 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
-import { Container, Content } from './styles'
+import { Container, Content, Filters } from './styles'
 
 import ContentHeader from '../../components/ContentHeader'
 import SelectInput from '../../components/SelectInput';
 import HistoryFinanceCard from '../../components/HistoryFinanceCard';
+import { IconBaseProps } from 'react-icons/lib';
 
-const List: React.FC = () => {
+interface IRouteParams {
+  match: {
+    params: {
+      type: string;
+    }
+  }
+}
 
-  const options = [
-    { value: 'Elivelton', label: 'Rodrigo' },
-    { value: 'Maria', label: 'Maria' },
-    { value: 'Ana', label: 'Ana' }
+const List: React.FC<IRouteParams> = ({ match }) => {
+
+  const { type } = match.params
+
+  const title = useMemo(() => {
+    return type === 'entry-balance' ?
+      {
+        title: 'Entradas',
+        lineColor: '#f7931b',
+      } :
+      {
+        title: 'Saídas',
+        lineColor: '#e44c4e',
+
+      }
+  }, [type])
+
+
+  const months = [
+    { value: '12', label: 'Dezembro' },
+    { value: '1', label: 'Janeiro' },
+    { value: '2', label: 'Feverreiro' }
   ]
+
+  const years = [
+    { value: '2021', label: '2021' },
+    { value: '2020', label: '2020' },
+    { value: '2019', label: '2019' }]
 
   return (
     <Container>
-      <ContentHeader title="Saídas" lineColor="#e44c4e">
-        <SelectInput options={options} />
+      <ContentHeader title={title.title} lineColor={title.lineColor}>
+        <SelectInput options={months} />
+        <SelectInput options={years} />
 
       </ContentHeader>
+
+      <Filters>
+        <button
+          type="button"
+          className="tag-filter tag-filter-recurrent"
+        >
+          Recorentes
+        </button>
+
+        <button
+          type="button"
+          className="tag-filter tag-filter-eventual"
+        >
+          Eventuais
+        </button>
+      </Filters>
 
       <Content>
         <HistoryFinanceCard
