@@ -30,7 +30,7 @@ export const MenuContainer = styled.nav`
   display: flex;
   flex-direction: column;
 
-  margin-top:50px
+  margin-top:50px;
 `;
 
 export const MenuItemLink = styled.a`
