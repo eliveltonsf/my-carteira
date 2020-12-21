@@ -32,6 +32,8 @@ interface IData {
 
 const List: React.FC<IRouteParams> = ({ match }) => {
   const [data, setData] = useState<IData[]>([]);
+  const [monthSelected, setMonthSelected] = useState<string>(String(new Date().getMonth() + 1));
+  const [yearSelected, setYearSelected] = useState<string>(String(new Date().getFullYear()));
 
   const { type } = match.params
 
@@ -50,19 +52,28 @@ const List: React.FC<IRouteParams> = ({ match }) => {
   }, [type])
 
   const months = [
-    { value: '12', label: 'Dezembro' },
     { value: '1', label: 'Janeiro' },
-    { value: '2', label: 'Feverreiro' }
+    { value: '5', label: 'Maio' },
+    { value: '7', label: 'Junho' }
   ]
 
   const years = [
-    { value: '2021', label: '2021' },
     { value: '2020', label: '2020' },
-    { value: '2019', label: '2019' }]
+    { value: '2019', label: '2019' },
+    { value: '2018', label: '2018' }]
 
   useEffect(() => {
 
-    const response = typeRender.listData.map(item => {
+    const filteredDate = typeRender.listData.filter(item => {
+      const date = new Date(item.date);
+      const month = String(date.getMonth() + 1);
+      const year = String(date.getFullYear());
+
+      return month === monthSelected && year === yearSelected;
+
+    });
+
+    const formatedDate = filteredDate.map(item => {
       return {
         id: item.id,
         description: item.description,
@@ -73,14 +84,14 @@ const List: React.FC<IRouteParams> = ({ match }) => {
       }
     })
 
-    setData(response);
-  }, []);
+    setData(formatedDate);
+  }, [typeRender.listData, monthSelected, yearSelected]);
 
   return (
     <Container>
       <ContentHeader title={typeRender.title} lineColor={typeRender.lineColor}>
-        <SelectInput options={months} />
-        <SelectInput options={years} />
+        <SelectInput options={months} defaultValue={monthSelected} onChange={e => setMonthSelected(e.target.value)} />
+        <SelectInput options={years} defaultValue={yearSelected} onChange={e => setYearSelected(e.target.value)} />
 
       </ContentHeader>
 
